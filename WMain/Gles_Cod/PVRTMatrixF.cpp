@@ -166,18 +166,18 @@ void PVRTMatrixOrthoLHF(
 	mOut.f[ 3] = 0;
 
 	mOut.f[ 4] = 0;
-	mOut.f[ 5] = 2 / h;
+	mOut.f[ 5] = -2 / h;
 	mOut.f[ 6] = 0;
 	mOut.f[ 7] = 0;
 
 	mOut.f[ 8] = 0;
 	mOut.f[ 9] = 0;
-	mOut.f[10] = 1 / (zf - zn);
-	mOut.f[11] = zn / (zn - zf);
+	mOut.f[10] = 2 / (zf - zn);
+	mOut.f[11] = 0;
 
 	mOut.f[12] = 0;
 	mOut.f[13] = 0;
-	mOut.f[14] = 0;
+	mOut.f[14] = (zn+zf)/(zn-zf);
 	mOut.f[15] = 1;
 
 }

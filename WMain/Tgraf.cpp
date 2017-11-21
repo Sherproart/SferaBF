@@ -3,6 +3,7 @@
 #include "WMain.h"
 #include "graph.h"
 #include <stdio.h>
+#include "PVRTMatrix.h"
 
 unsigned Tex1;
 
@@ -78,18 +79,61 @@ switch(cnt){
 
 }//----------
 
+extern PVRTMATRIXf mvpMatrix;
+
 void Test3()
 {
+	GetWindowSise(MainHwnd);
 	SetViewport(0, 0, w_Width, w_Heigh);
-	glUniform1i(UnifGModeLoc, GMODE_PAINT);
 
-  float V[]={10, 10,  110,10,  110,110, 10,110};
-  glVertexAttribPointer ( POS_INDEX, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), V );
+  glUniform1i(UnifGModeLoc, GMODE_PAINT);
+
+
+  float V[]={0,0,0, 200,0,0,  100,100,32,  0,100,0};
+  //float V[]={0,0,0, 200,0,0, 100,100,5,  0,100,0};
+  //float V[]={0, 0,  1,0,  1,1, 0,1};
+  glVertexAttribPointer ( POS_INDEX, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), V );
   glEnableVertexAttribArray ( POS_INDEX );
 
-  glUniform4fv(Un_ClrLoc,1 ,clmGreen);
-  glDrawArrays ( GL_TRIANGLE_FAN, 0, 3 );
-  Sleep(300);
+  //glUniform4fv(Un_ClrLoc,1 ,clmGreen);
+
+  // Атрибут-константа для передачи цвета, можно взять 4fv для прозрачности.
+  //float clr[]={0,1,0};glVertexAttrib3fv(COL_INDEX, clr);
+  //------------------------------------------------------------------------
+
+
+  float Color[]={
+	1,0,0,1,
+	0,1,0,1,
+	0,0,1,1,
+	1,1,0,1
+  };
+  glVertexAttribPointer ( COL_INDEX, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), Color );
+  glEnableVertexAttribArray ( COL_INDEX );
+
+
+  //glDrawArrays ( GL_LINE_STRIP, 0, 2 );
+
+  /*
+  mvpMatrix.f[0]=0.1;
+  mvpMatrix.f[1]=0.2;
+  mvpMatrix.f[2]=0.3;
+  mvpMatrix.f[3]=0;
+  */
+
+  //mvpMatrix.f[5]=-1;
+  //glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+  
+  
+  //glDrawArrays ( GL_LINE_STRIP, 0, 2 );
+
+  glDrawArrays ( GL_TRIANGLE_FAN, 0, 3 );//
+  
+
+
+
+
+  //Sleep(300);
   mSwapBuffers();
 
 

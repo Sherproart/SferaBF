@@ -33,13 +33,8 @@ GLint UnifMvpMatrixLoc;
 void GetAtribAndUniformLocation()
 {
    UnifTexLoc  = glGetUniformLocation(m_progHandle, "Texture");
-   //UnifColLoc = glGetUniformLocation(m_progHandle, "u_FntCol");
-   UnifBgColLoc = glGetUniformLocation(m_progHandle, "u_BgCol");
    UnifGModeLoc = glGetUniformLocation(m_progHandle, "GMode");
    Un_ClrLoc = glGetUniformLocation(m_progHandle, "PColor");
-
-   //AttribPosSimvLoc = glGetAttribLocation(m_progHandle, "pos");
-   //AttribTexCoordLoc = glGetAttribLocation(m_progHandle, "txCoord");
 }
 
 
@@ -79,11 +74,13 @@ GLbyte FragShader[] =
   "uniform int GMode;"
   "uniform vec4 PColor;"
   "varying vec2 v_texCoord;"
+  "varying mediump vec4 v_Color;"
 
   "void main()"
   "{"
      "if (GMode == GMODE_PAINT)"
-        "gl_FragColor = PColor;" /* отображение геометрической фигуры */
+	    "gl_FragColor = v_Color;" /* отображение геометрической фигуры */
+        //"gl_FragColor = PColor;" /* отображение геометрической фигуры */
      "else {"
         "gl_FragColor = texture2D(Texture, v_texCoord);" /* отображение шрифта или картинки */
 		//"if (gl_FragCoord.y < 500.0)"
@@ -96,14 +93,23 @@ GLbyte FragShader[] =
 GLbyte VertShader[] =
 {
    "uniform mediump mat4 u_mvpMatrix;"
-   "attribute highp vec4 pos;"
+   "attribute highp vec4 a_pos;"
    "attribute mediump vec2 a_txCoord;"
+   "attribute mediump vec4 a_Color;"
    "varying mediump vec2 v_texCoord;"
+   "varying mediump vec4 v_Color;"
 
    "void main()"
    "{"
-       "gl_Position = u_mvpMatrix*pos;"
+       //"if (a_pos.w==1.0)"
+	  //"a_pos.w=0.3;"
+       "gl_Position = u_mvpMatrix*a_pos;"
+	   //"gl_Position = a_pos*u_mvpMatrix;"
+	   //"if (gl_Position.w==1.0)"
+	     //"gl_Position.w=2.0;"
+	  // "gl_Position.z=0.0;"
        "v_texCoord = a_txCoord;"
+	   "v_Color = a_Color;"
    "}"
 };
 
@@ -183,8 +189,9 @@ int Init(ESContext *esContext)
 
    // связывание индексов атрибутов с переменными шейдера
    // это действует только до линковки данного программного объекта
-   glBindAttribLocation ( m_progHandle, POS_INDEX, "pos" );
+   glBindAttribLocation ( m_progHandle, POS_INDEX, "a_pos" );
    glBindAttribLocation ( m_progHandle, TXCOORD_INDEX, "a_txCoord" );
+   glBindAttribLocation ( m_progHandle, COL_INDEX, "a_Color" );
 
    glLinkProgram( m_progHandle );
 
@@ -448,17 +455,9 @@ void glmOrtho(float left,float right,float bottom ,float top,float nearZ,float f
     PVRTMATRIXf ort;
     PVRTMatrixOrthoLHF(ort,w,h,nearZ,farZ);
     
-		   //ort.f[12]=-1.0005;//(-0.9985 for windows 23.11.2015 sn4215)
-		//ort.f[12]=-0.9998;// сдвиг по X в единицах исходных (то есть исх куб x,y,x=(-1...+1))
 	ort.f[12]=-0.9998;// сдвиг по X в единицах исходных (то есть исх куб x,y,x=(-1...+1))
 		ort.f[13]=1.0;    // сдвиг по Y
-	//ort.f[13]=0.9995;    // сдвиг по Y
-		ort.f[15]=1.000;  // масштабирование
 
-
-    ort.f[14]=-(nearZ + farZ) / deltaZ; // сдвиг по Z
-         //ort.f[15]=1.0007;  // масштабирование
-	//ort.f[15]=1.000;  // масштабирование
 
     PVRTMatrixMultiplyF(mvpMatrix,ort,mvpMatrix);
     glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
@@ -588,6 +587,6 @@ void SetViewport(int X0, int  Y0, int  W, int  H)
 {
     glViewport(X0, Y0, W, H);
     PVRTMatrixIdentityF(mvpMatrix);
-    glmOrtho(0, W, H, 0, -1, 1); // 
+    glmOrtho(0, W, 0, H, -100, 30);
     return;
 }

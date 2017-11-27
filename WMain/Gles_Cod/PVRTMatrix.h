@@ -49,6 +49,16 @@ void PVRTMatrixScalingF(
 	const float fY,
 	const float fZ);
 
+
+/*!***************************************************************************
+ @Function Name		PVRTMatrixRotationXF
+ @Output			mOut	Rotation matrix
+ @Input				fAngle	Angle of the rotation
+ @Description		Create an X rotation matrix mOut.
+*****************************************************************************/
+void PVRTMatrixRotationXF(PVRTMATRIXf	&mOut, const float fAngle);
+
+
 /*!***************************************************************************
  @Function Name		PVRTMatrixRotationZF
  @Output			mOut	Rotation matrix
@@ -89,6 +99,11 @@ void PVRTMatrixOrthoLHF(
 	const float h,
 	const float zn,
 	const float zf);
+
+// поворот вокруг произвольной оси, которая задается вектором Vx, Vy, Vz
+// rotate around vector Vx, Vy, Vz
+// A - rotate angle
+void glmRotate_V(PVRTMATRIXf	&mOut,const float A, float Vx, float Vy, float Vz);
 	
 		
 	

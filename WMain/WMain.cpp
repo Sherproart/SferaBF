@@ -191,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
 		case ID_32832:
-			Test3();
+			TestS();
 			printf("Ok");
 			Sleep(300);
 			break;
@@ -207,10 +207,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
+		//hdc = BeginPaint(hWnd, &ps);
 		//Draw(); // -----
-		Test3();
-		EndPaint(hWnd, &ps);
+		TestS();
+		Sleep(10);
+		//EndPaint(hWnd, &ps);
 		break;
 
 	case WM_DESTROY:

@@ -3,6 +3,7 @@
 #include "resource.h"
 
 void Test3();
+void TestS();
 
 int Video_init();
 

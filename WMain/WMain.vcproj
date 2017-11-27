@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\;..\WMain;..\WMain\Gles_Cod;.\General_Graf;.\Sys_Graf"
+				AdditionalIncludeDirectories=".\;..\;..\WMain;..\WMain\Gles_Cod;.\General_Graf;.\Sys_Graf; .\Quaternion"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WINDWS_"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -186,7 +186,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Quaternion\Quaternion.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Gles_Graf\Rectangl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sfera.cpp"
 				>
 			</File>
 			<File

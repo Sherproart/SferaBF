@@ -310,5 +310,9 @@ void PDraw (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color );
 void glmPushMatrix();
 void glmPopMatrix();
 void glmTranslatef(float x, float y, float z);
+void glmRotate_X(float Angle);
+void glmRotate_Z(float Angle);
+void Y_rotate(float Angle);
+void V_rotate(float Angle, float vx, float vy, float vz);
 
 #endif // ESUTIL_H

@@ -14,6 +14,7 @@ float  clmYellow[]={1.,1.,0.,1.};
 float  clmYellow3[]={0.5,0.5,0.,1.};
 float  clmYellow4[]={0.7,0.7,0.,1.};
 float  clmPurple[]={1.,0.,1.,1.};
+float  clmWhite[]={1,1,1,1};
 
 
 

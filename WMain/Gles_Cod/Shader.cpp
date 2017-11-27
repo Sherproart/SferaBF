@@ -232,8 +232,8 @@ int Init(ESContext *esContext)
    //mSwapBuffers();
 
 
-   glClearColor ( 0.0, 0.0, 0.0, 1.0);
-   glClear ( GL_COLOR_BUFFER_BIT );
+   //glClearColor ( 0.0, 0.0, 0.0, 1.0);
+   //glClear ( GL_COLOR_BUFFER_BIT );
 
    // PtintAttribs(3);
 
@@ -455,8 +455,8 @@ void glmOrtho(float left,float right,float bottom ,float top,float nearZ,float f
     PVRTMATRIXf ort;
     PVRTMatrixOrthoLHF(ort,w,h,nearZ,farZ);
     
-	ort.f[12]=-0.9998;// сдвиг по X в единицах исходных (то есть исх куб x,y,x=(-1...+1))
-		ort.f[13]=1.0;    // сдвиг по Y
+	//ort.f[12]=-0.9998;// сдвиг по X в единицах исходных (то есть исх куб x,y,x=(-1...+1))
+	//	ort.f[13]=1.0;    // сдвиг по Y
 
 
     PVRTMatrixMultiplyF(mvpMatrix,ort,mvpMatrix);
@@ -564,6 +564,53 @@ void glmRotate_xy(float Angle,float x0, float y0)
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
+// вращение вокруг оси X ----------
+void glmRotate_X(float Angle)
+{
+   static PVRTMATRIXf rot;
+static int raz=1;
+if(raz){
+   PVRTMatrixRotationXF(rot,Angle*GrRad); // это можно сделать глобальным и вычислять раз
+   raz=0;
+}
+   PVRTMatrixMultiplyF(mvpMatrix,rot,mvpMatrix);
+   glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+}
+
+// вращение вокруг оси Z ----------
+void glmRotate_Z(float Angle)
+{
+   PVRTMATRIXf rot;
+   PVRTMatrixRotationZF(rot,Angle*GrRad); // это можно сделать глобальным и вычислять раз
+   PVRTMatrixMultiplyF(mvpMatrix,rot,mvpMatrix);
+   glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+}
+
+
+
+void V_rotate(float Angle, float vx, float vy, float vz)
+{
+	PVRTMATRIXf Rotate_mtr; // for constant rotate axis and angle
+	glmRotate_V(Rotate_mtr,Angle*GrRad,vx, vy,  vz);
+	PVRTMatrixMultiplyF(mvpMatrix,Rotate_mtr,mvpMatrix);
+	glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
+}//--------------
+
+void Y_rotate(float Angle)
+{
+	static PVRTMATRIXf Rotate_mtr; // for constant rotate axis and angle
+	static int raz=1;
+	if(raz){
+		glmRotate_V(Rotate_mtr,Angle*GrRad,0, 1, 0);
+		raz=0;
+	}
+	PVRTMatrixMultiplyF(mvpMatrix,Rotate_mtr,mvpMatrix);
+	glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
+}//--------------
+
+
 void glmTranslatef(float x,float y,float z)
 {
    PVRTMATRIXf t;
@@ -587,6 +634,7 @@ void SetViewport(int X0, int  Y0, int  W, int  H)
 {
     glViewport(X0, Y0, W, H);
     PVRTMatrixIdentityF(mvpMatrix);
-    glmOrtho(0, W, 0, H, -100, 30);
+    //glmOrtho(0, W, 0, H, -100, 30);
+	glmOrtho(-W/2, W/2, -H/2, H/2, -1000, 1000);
     return;
 }

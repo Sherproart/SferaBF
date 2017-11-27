@@ -1,12 +1,18 @@
 #include "stdafx.h"
-#include "workGL.h"
+#include "esUtil.h"
 #include <stdio.h>
 #include "math.h"
 #include "sfera.h"
 
-float Pi = atan(1) * 4;
+float Blue[]={0,0,1,1};
+float White[] = { 1,1,1,1 };
+float Green[] = { 0,1,0,1 };
+float Red[] = { 1,0,0,1 };
+float Black[]= { 0,0,0,1 };
 
-TSfera Sf(200,4,3);
+float Pi = atan((float)1) * 4;
+
+TSfera Sf(200,12,24);
 
 /**
  создает пустой массив точек длиной cnt
@@ -15,7 +21,7 @@ void TPoligon::Create(int cnt_)
 {
     cnt = cnt_; 
     if (cnt == 0)return;
-    pnt = new FPoint[cnt];
+    pnt = new SPoint[cnt];
 
 }//TPoligon::TPoligon---------------
 
@@ -35,35 +41,22 @@ void RandomColor(float* out) {
 
 void TPoligon::Draw()
 {
-    //glDisable(GL_TEXTURE_2D);
-    //glColor4fv(White);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(FPoint), pnt); // 2 - число координат вершины
 
-    //float* Norm = (float*)pnt; Norm += 3;
-    //glEnableClientState(GL_NORMAL_ARRAY);
-    //glNormalPointer(GL_FLOAT, 3 * sizeof(FPoint), Norm);
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
-
+   // glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
 }
 
 // полигон со случайным цветом
 void TPoligon::DrawRndColor()
 {
-    glColor4fv(Color);
     Draw();
-
 }//TPoligon::DrawRndColor---------------
 
 void TPoligon::DrawLine()
 {
-    //glDisable(GL_TEXTURE_2D);
-    glColor4fv(White);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(FPoint), pnt); // 2 - число координат вершины
+	glVertexAttribPointer ( POS_INDEX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt );
+	glEnableVertexAttribArray ( POS_INDEX );
+	glVertexAttrib3fv(COL_INDEX, Color);
     glDrawArrays(GL_LINE_STRIP, 0, cnt);
-
 }
 //TPoligon::Draw----------------------
 
@@ -72,8 +65,8 @@ TSfera::TSfera(float R_, int Nz_, int Na_)
     R = R_; Nz = Nz_; Na = Na_;
     dFi = Pi / Nz;
     dLa = 2*Pi / Na;
-    Create();
-    //CreateFull();
+    //Create();
+    CreateFull();
 }
 
 void TSfera::Create()
@@ -111,10 +104,10 @@ void TSfera::Create()
         {
             pgn[ind].Create(4); // 4 вершини
             float La1 = dLa*i; float La2 = dLa*(i + 1);
-            pgn[ind].pnt[4 * i].Set(Rt*cos(La1), Rt*sin(La1), Zt);
-            pgn[ind].pnt[4 * i + 1].Set(Rt*cos(La2), Rt*sin(La2), Zt);
-            pgn[ind].pnt[4 * i + 2].Set(Rd*cos(La2), Rd*sin(La2), Zd);
-            pgn[ind].pnt[4 * i + 3].Set(Rd*cos(La1), Rd*sin(La1), Zd);
+            pgn[ind].pnt[0].Set(Rt*cos(La1), Rt*sin(La1), Zt);
+            pgn[ind].pnt[1].Set(Rt*cos(La2), Rt*sin(La2), Zt);
+            pgn[ind].pnt[2].Set(Rd*cos(La2), Rd*sin(La2), Zd);
+            pgn[ind].pnt[3].Set(Rd*cos(La1), Rd*sin(La1), Zd);
 
             RandomColor(RndColor);
             pgn[ind].SetColor(RndColor);
@@ -145,13 +138,14 @@ void TSfera::CreateFull()
     float R1 = R*sin(dFi);
     float Z1 = R*cos(dFi);
 
-    pgn[0].Create(Na*3); // веерн полигон-конус
+    pgn[Nz-1].Create(Na * 3); // веерн полигон-конус
     for (int i = 0; i < Na; i++)
     {
-        pgn[0].pnt[3*i].Set(0, 0, R); // ближний полюс (вершина веера)
-        pgn[0].pnt[3*i + 1].Set(R1*cos(dLa*i), R1*sin(dLa*i), Z1);
-        pgn[0].pnt[3*i + 2].Set(R1*cos(dLa*(i+1)), R1*sin(dLa*(i+1)), Z1);
+        pgn[Nz-1].pnt[3*i].Set(0, 0, -R); // ближний полюс (вершина веера)
+        pgn[Nz-1].pnt[3*i + 1].Set(R1*cos(dLa*i), R1*sin(dLa*i), -Z1);
+        pgn[Nz-1].pnt[3*i + 2].Set(R1*cos(dLa*(i + 1)), R1*sin(dLa*(i + 1)), -Z1);
     }
+	pgn[Nz-1].SetColor(Blue);
 
     for (int u = 1; u < Nz - 1; u++)
     {
@@ -172,19 +166,22 @@ void TSfera::CreateFull()
             pgn[u].pnt[5*i + 3].Set(Rd*cos(La1), Rd*sin(La1), Zd);
             pgn[u].pnt[5*i + 4].Set(Rt*cos(La1), Rt*sin(La1), Zt);
         }
+		pgn[u].SetColor(Green);
 
     }
 
-    pgn[Nz-1].Create(Na * 3); // веерн полигон-конус
+	    pgn[0].Create(Na*3); // веерн полигон-конус
     for (int i = 0; i < Na; i++)
     {
-        pgn[Nz-1].pnt[3*i].Set(0, 0, -R); // ближний полюс (вершина веера)
-        pgn[Nz-1].pnt[3*i + 1].Set(R1*cos(dLa*i), R1*sin(dLa*i), -Z1);
-        pgn[Nz-1].pnt[3*i + 2].Set(R1*cos(dLa*(i + 1)), R1*sin(dLa*(i + 1)), -Z1);
+        pgn[0].pnt[3*i].Set(0, 0, R); // ближний полюс (вершина веера)
+        pgn[0].pnt[3*i + 1].Set(R1*cos(dLa*i), R1*sin(dLa*i), Z1);
+        pgn[0].pnt[3*i + 2].Set(R1*cos(dLa*(i+1)), R1*sin(dLa*(i+1)), Z1);
     }
+	pgn[0].SetColor(White);
 
     cnt = Nz;
 
+	//pgn[1].SetColor(Red);
     
 }
 void TSfera::DrawPoligonR()
@@ -207,9 +204,11 @@ void TSfera::DrawLine()
 }
 //TSfera::TSfera-----------------
 
-TCone::TCone(float R_, int Na_)
+void TPoligon::DrawMrk(int Pcnt, float* clr) // первые Pcnt точек
 {
-    R = R_; Na = Na_;
-    dLa = 2 * Pi / Na;
-}
+	glVertexAttribPointer ( POS_INDEX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt );
+	glEnableVertexAttribArray ( POS_INDEX );
+	glVertexAttrib3fv(COL_INDEX, clr);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, Pcnt);
 
+}//TPoligon::DrawCnt------------------

@@ -77,6 +77,30 @@ void PVRTMatrixScalingF(
 }
 
 /*!***************************************************************************
+ @Function Name		PVRTMatrixRotationXF
+ @Output			mOut	Rotation matrix
+ @Input				fAngle	Angle of the rotation
+ @Description		Create an X rotation matrix mOut.
+*****************************************************************************/
+void PVRTMatrixRotationXF(
+	PVRTMATRIXf	&mOut,
+	const float fAngle)
+{
+	float		fCosine, fSine;
+	fCosine =	cos(fAngle);
+    fSine =		sin(fAngle);
+
+    memcpy(&mOut,&c_mIdentity,sizeof(PVRTMATRIXf)); 
+	mOut.f[ 5]=fCosine;		mOut.f[ 9]=fSine;	
+	mOut.f[ 6]=-fSine;		mOut.f[ 10]=fCosine;	
+	/* Create the trigonometric matrix corresponding to X Rotation */
+	//mOut.f[ 0]=1.0f;	mOut.f[ 4]=0.0f;	mOut.f[ 8]=0.0f;	mOut.f[12]=0.0f;
+	//mOut.f[ 1]=0.0f;	mOut.f[ 5]=fCosine;	mOut.f[ 9]=fSine;	mOut.f[13]=0.0f;
+	//mOut.f[ 2]=0.0f;	mOut.f[ 6]=-fSine;	mOut.f[10]=fCosine;	mOut.f[14]=0.0f;
+	//mOut.f[ 3]=0.0f;	mOut.f[ 7]=0.0f;	mOut.f[11]=0.0f;	mOut.f[15]=1.0f;
+}
+
+/*!***************************************************************************
  @Function Name		PVRTMatrixRotationZF
  @Output			mOut	Rotation matrix
  @Input				fAngle	Angle of the rotation
@@ -180,6 +204,25 @@ void PVRTMatrixOrthoLHF(
 	mOut.f[14] = (zn+zf)/(zn-zf);
 	mOut.f[15] = 1;
 
-}
+}//PVRTMatrixOrthoLHF----------------------
 
+
+// rotate around vector Vx, Vy, Vz
+// A - угол поворота
+void glmRotate_V(PVRTMATRIXf	&mOut,const float A, float Vx, float Vy, float Vz)
+{
+	float	CosA, SinA;
+	CosA =	cos(A);
+    SinA =	sin(A);
+
+	mOut.f[ 0]=CosA+(1-CosA)*Vx*Vx; mOut.f[ 1]=(1-CosA)*Vx*Vy-SinA*Vz; 
+					mOut.f[ 2]=(1-CosA)*Vx*Vz+SinA*Vy;  mOut.f[ 3]=0;
+    mOut.f[ 4]=(1-CosA)*Vy*Vx+SinA*Vz; mOut.f[ 5]=CosA+(1-CosA)*Vy*Vy;
+					mOut.f[ 6]=(1-CosA)*Vy*Vz-SinA*Vx;  mOut.f[ 7]=0;
+	mOut.f[ 8]=(1-CosA)*Vz*Vx-SinA*Vy; mOut.f[ 9]=(1-CosA)*Vz*Vy+SinA*Vx;
+					mOut.f[10]=CosA+(1-CosA)*Vz*Vz;   mOut.f[11]=0;
+	mOut.f[12]=0;  mOut.f[13]=0;  mOut.f[14]=0;  mOut.f[15]=1;
+
+
+}//glmRotate_V------------------------------
 

@@ -83,8 +83,9 @@ extern PVRTMATRIXf mvpMatrix;
 
 void Test3()
 {
-	GetWindowSise(MainHwnd);
-	SetViewport(0, 0, w_Width, w_Heigh);
+
+  GetWindowSise(MainHwnd);
+  SetViewport(0, 0, w_Width, w_Heigh);
 
   glUniform1i(UnifGModeLoc, GMODE_PAINT);
 
@@ -98,7 +99,7 @@ void Test3()
   //glUniform4fv(Un_ClrLoc,1 ,clmGreen);
 
   // Атрибут-константа для передачи цвета, можно взять 4fv для прозрачности.
-  //float clr[]={0,1,0};glVertexAttrib3fv(COL_INDEX, clr);
+  //float clr[]={0,1,0};glVertexAttrib3fv(COL_INDEX, clmGreen);
   //------------------------------------------------------------------------
 
 
@@ -124,17 +125,43 @@ void Test3()
   //mvpMatrix.f[5]=-1;
   //glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
   
-  
-  //glDrawArrays ( GL_LINE_STRIP, 0, 2 );
-
+  //glDrawArrays ( GL_LINE_LOOP, 0, 3 );
   glDrawArrays ( GL_TRIANGLE_FAN, 0, 3 );//
-  
-
-
-
 
   //Sleep(300);
   mSwapBuffers();
 
-
 }//--------------
+
+#include "sfera.h"
+
+void TestS()
+{
+ static int raz=1;
+ if(raz){
+	GetWindowSise(MainHwnd);
+	SetViewport(0, 0, w_Width, w_Heigh);
+	glUniform1i(UnifGModeLoc, GMODE_PAINT);
+	//glVertexAttrib3fv(COL_INDEX, clmGreen);
+
+	glmRotate_X(-60);
+	V_rotate(-20,0,1,0);
+	//glmRotate_Z(90);
+
+	raz=0;
+ }
+
+ glClearColor ( 0.0, 0.0, 0.0, 1.0);
+ glClear ( GL_COLOR_BUFFER_BIT );
+
+
+ //glmRotate_X(0.2);
+ glmRotate_Z(0.2);
+ //Y_rotate(0.2);
+
+ Sf.DrawLine();
+ Sf.pgn[0].DrawMrk(6,clmRed);
+
+ mSwapBuffers();
+
+}//----

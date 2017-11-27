@@ -1,16 +1,16 @@
-struct FPoint {
+struct SPoint {
     float x, y, z;
     float n[3];
     void Set(float px, float py, float pz) { x = px; y = py; z = pz; };
     void SetN(float px, float py, float pz) { n[0] = px; n[1] = py; n[2] = pz; };
     void PosToN() { SetN(1,0,0); };
     //void PosToN() { SetN(-x, -y, -z ); };
-    void Copy(FPoint* pp) { x = pp->x; y = pp->y; };
-    FPoint(){};
+    void Copy(SPoint* pp) { x = pp->x; y = pp->y; };
+    SPoint(){};
 };
 
 struct TPoligon {
-    FPoint* pnt;
+    SPoint* pnt;
     int Type; // GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN
     float Color[4];
     void SetColor(float* clr) { memcpy(Color, clr, 4 * sizeof(float)); };
@@ -19,18 +19,9 @@ struct TPoligon {
     void Draw();
     void DrawRndColor();
     void DrawLine();
+	void DrawMrk(int Pcnt, float* clr); // первые Pcnt точек
 
     int cnt;
-};
-
-// конус, вписаний в напівсферу
-struct TCone {
-    float R; int Na;
-    float dLa;
-    TPoligon* pgn;
-    int cnt;
-    TCone(float R_, int  Na_);
-    void Create();
 };
 
 struct TSfera {
@@ -47,6 +38,14 @@ struct TSfera {
 };
 
 extern TSfera Sf;
+
+extern float Blue[];
+extern float White[];
+extern float Green[];
+extern float Red[];
+extern int Stop;
+extern float Pi;
+
 
 /*
 В модели освещения член, учитывающий расстояние до источника, имеет вид:

@@ -199,7 +199,7 @@ void TSfera::DrawLine()
     
     for (int i = 0; i < cnt; i++)
     {
-        pgn[i].DrawLine();
+        pgn[cnt-1-i].DrawLine();
     }
 }
 //TSfera::TSfera-----------------

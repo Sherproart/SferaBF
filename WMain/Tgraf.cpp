@@ -144,7 +144,7 @@ void TestS()
 	glUniform1i(UnifGModeLoc, GMODE_PAINT);
 	//glVertexAttrib3fv(COL_INDEX, clmGreen);
 
-	glmRotate_X(-60);
+	glmRotate_X(60);
 	V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
 
@@ -165,3 +165,41 @@ void TestS()
  mSwapBuffers();
 
 }//----
+
+
+void TestABBA()
+{
+
+
+    static int raz = 1;
+    if (raz) {
+        GetWindowSise(MainHwnd);
+        SetViewport(0, 0, w_Width, w_Heigh);
+
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        Line(-400, 0, 400, 0, clmWhite);
+        Line(0, -400, 0, 400, clmWhite);
+        Bar(0, 100, 10, 110, clmGreen);
+        mSwapBuffers();
+        Line(-400, 0, 400, 0, clmWhite);
+        Line(0, -400, 0, 400, clmWhite);
+        Bar(0, 100, 10, 110, clmGreen);
+
+        glUniform1i(UnifGModeLoc, GMODE_PAINT);
+        glmRotate_Z(20);
+        //glmTranslatef(100, 0, 0);
+        Bar(0, 100, 10, 110, clmGreen);
+        glmTranslatef(100, 0, 0);
+        //glmRotate_Z(20);
+        raz = 0;
+    }
+
+
+    Bar(0, 100, 10, 110, clmRed);
+
+    mSwapBuffers();
+
+}//----
+

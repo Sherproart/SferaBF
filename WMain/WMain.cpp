@@ -210,6 +210,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//hdc = BeginPaint(hWnd, &ps);
 		//Draw(); // -----
 		TestS();
+        //TestABBA();
 		Sleep(10);
 		//EndPaint(hWnd, &ps);
 		break;

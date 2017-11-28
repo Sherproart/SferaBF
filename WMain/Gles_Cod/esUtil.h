@@ -315,4 +315,6 @@ void glmRotate_Z(float Angle);
 void Y_rotate(float Angle);
 void V_rotate(float Angle, float vx, float vy, float vz);
 
+void TestABBA();
+
 #endif // ESUTIL_H

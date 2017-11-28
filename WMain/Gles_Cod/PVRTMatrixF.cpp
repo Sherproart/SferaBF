@@ -190,7 +190,7 @@ void PVRTMatrixOrthoLHF(
 	mOut.f[ 3] = 0;
 
 	mOut.f[ 4] = 0;
-	mOut.f[ 5] = -2 / h;
+	mOut.f[ 5] = 2 / h;
 	mOut.f[ 6] = 0;
 	mOut.f[ 7] = 0;
 

@@ -615,7 +615,7 @@ void glmTranslatef(float x,float y,float z)
 {
    PVRTMATRIXf t;
    PVRTMatrixTranslationF(t,x,y,z);
-   PVRTMatrixMultiplyF(mvpMatrix,t,mvpMatrix);
+   PVRTMatrixMultiplyF(mvpMatrix,t,mvpMatrix);//tr
 
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }

@@ -32,7 +32,8 @@ void PDraw (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color )
    // Load the vertex data
    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, 0, PointCoord );
    glEnableVertexAttribArray ( 0 );
-   glUniform4fv(Un_ClrLoc,1 ,color);
+   //glUniform4fv(Un_ClrLoc,1 ,color);
+   glVertexAttrib3fv(COL_INDEX, color);
    glDrawArrays ( mode, 0, n );
 
 }
@@ -46,4 +47,12 @@ void GetWindowSise(HWND hWnd)
 	w_Heigh = w_Rect.bottom - w_Rect.top;
 
 }//GetWindowSise---------
+
+void Line(float SX, float SY, float EX, float EY, float* Color)
+{
+    float PointCoord[] = { SX,SY, EX,EY };
+    PDraw(PointCoord, 2, GL_LINES, Color);
+}//-----------------
+
+
 

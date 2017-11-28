@@ -12,6 +12,8 @@ const double pi = 4 * atan(1.);
 const double RadGr = 180 / pi;
 const double GrRad = pi / 180;
 
+float ClipPlane[] = {0,1,0,0};
+
 GLuint m_vertShaderHandle;   // The OpenGL vertex shader id
 GLuint m_fragShaderHandle;   // The OpenGL fragment shader id
 GLuint m_progHandle;         // The OpenGL program id
@@ -23,11 +25,10 @@ GLint AttribTexCoordLoc; // для передачи соотв. координат текстуры для данной ве
 // GLint AttribColorLoc;
 // Uniforms location
 GLint UnifTexLoc;
-GLint UnifColLoc;
 GLint Un_ClrLoc;
-GLint UnifBgColLoc;
 GLint UnifGModeLoc; // печать шрифта, шрифта с фоном, рисование
 GLint UnifMvpMatrixLoc;
+GLint UnifClipPlane;
 //-----------------------
 
 void GetAtribAndUniformLocation()
@@ -35,6 +36,7 @@ void GetAtribAndUniformLocation()
    UnifTexLoc  = glGetUniformLocation(m_progHandle, "Texture");
    UnifGModeLoc = glGetUniformLocation(m_progHandle, "GMode");
    Un_ClrLoc = glGetUniformLocation(m_progHandle, "PColor");
+   UnifClipPlane = glGetUniformLocation(m_progHandle, "u_clipPlane");
 }
 
 
@@ -75,9 +77,13 @@ GLbyte FragShader[] =
   "uniform vec4 PColor;"
   "varying vec2 v_texCoord;"
   "varying mediump vec4 v_Color;"
+    "varying float u_clipDist;"
 
   "void main()"
   "{"
+      // Reject fragments behind the clip plane
+    "if (u_clipDist < 0.0) discard;"
+       
      "if (GMode == GMODE_PAINT)"
 	    "gl_FragColor = v_Color;" /* отображение геометрической фигуры */
         //"gl_FragColor = PColor;" /* отображение геометрической фигуры */
@@ -98,18 +104,18 @@ GLbyte VertShader[] =
    "attribute mediump vec4 a_Color;"
    "varying mediump vec2 v_texCoord;"
    "varying mediump vec4 v_Color;"
+    "uniform vec4 u_clipPlane;"
+    "varying float u_clipDist;"
 
    "void main()"
    "{"
-       //"if (a_pos.w==1.0)"
-	  //"a_pos.w=0.3;"
        "gl_Position = u_mvpMatrix*a_pos;"
-	   //"gl_Position = a_pos*u_mvpMatrix;"
-	   //"if (gl_Position.w==1.0)"
-	     //"gl_Position.w=2.0;"
-	  // "gl_Position.z=0.0;"
        "v_texCoord = a_txCoord;"
 	   "v_Color = a_Color;"
+   
+       // Compute the distance between the vertex and the clip plane
+       "u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) + u_clipPlane.w;"
+       
    "}"
 };
 
@@ -228,6 +234,7 @@ int Init(ESContext *esContext)
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 
    SetViewport(0, 0, esContext->width, esContext->height);
+   glUniform4fv(UnifClipPlane, 1, ClipPlane);
       //glmOrtho(0, w_Width, w_Heigh, 0, 0, 1);
    //mSwapBuffers();
 
@@ -495,9 +502,8 @@ void glmPopMatrix()
 }
 
 // x,y,z - ось вращения
-// x0,y0,z0 - точка вращения
 //
-void glmRotate(float Angle, float x,float y,float z, float x0,float y0,float z0)
+void glmRotate(float Angle, float x,float y,float z)
 {
    float sinAngle, cosAngle;
    float mag = sqrtf(x * x + y * y + z * z);

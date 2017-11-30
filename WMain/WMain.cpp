@@ -5,6 +5,7 @@
 #include "esUtil.h"
 #include <stdio.h>
 #include "graph.h"
+#include "PVRTMatrix.h"
 
 #define MAX_LOADSTRING 100
 int bgn_WM_SIZE;
@@ -191,8 +192,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
 		case ID_32832:
-			TestS();
-			printf("Ok");
+			//TestS();
+            TestMatr1();
+			printf("----");
 			Sleep(300);
 			break;
 
@@ -207,12 +209,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 	case WM_PAINT:
-		//hdc = BeginPaint(hWnd, &ps);
+		hdc = BeginPaint(hWnd, &ps);
 		//Draw(); // -----
 		TestS();
         //TestABBA();
+       // TestMatr1();
 		Sleep(10);
-		//EndPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
 		break;
 
 	case WM_DESTROY:

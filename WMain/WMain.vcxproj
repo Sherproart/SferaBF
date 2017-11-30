@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleWnd.cpp" />
+    <ClCompile Include="Gles_Cod\MatrixExample.cpp" />
     <ClCompile Include="Gles_Cod\PVRTMatrixF.cpp" />
     <ClCompile Include="Gles_Cod\Shader.cpp" />
     <ClCompile Include="Gles_Graf\Primitive.cpp" />

@@ -12,6 +12,13 @@ public:
 		return &f[Row<<2];
 	}
 	float f[16];	/*!< Array of float */
+    void print();
+    void Set(
+        float a0, float a4, float a8,  float a12,
+        float a1, float a5, float a9,  float a13,
+        float a2, float a6, float a10, float a14,
+        float a3, float a7, float a11, float a15
+        );
 };
 
 /*!***************************************************************************
@@ -104,6 +111,7 @@ void PVRTMatrixOrthoLHF(
 // rotate around vector Vx, Vy, Vz
 // A - rotate angle
 void glmRotate_V(PVRTMATRIXf	&mOut,const float A, float Vx, float Vy, float Vz);
+void TestMatr1();
 	
 		
 	

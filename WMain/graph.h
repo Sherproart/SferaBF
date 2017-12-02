@@ -13,10 +13,12 @@ extern float  clmYellow3[];
 extern float  clmYellow4[];
 extern float  clmPurple[];
 extern float  clmWhite[];
+extern float  clmBlack[];
 
 void Bar(float SX,float SY,float EX,float EY,TmColor Color);
 void Rectangle(float SX,float SY,float EX,float EY,TmColor Color);
 void PDraw (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color );
+void PDraw3D (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color );
 void Line(float SX, float SY, float EX, float EY, float* Color);
 
 

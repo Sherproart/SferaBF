@@ -15,6 +15,7 @@ float  clmYellow3[]={0.5,0.5,0.,1.};
 float  clmYellow4[]={0.7,0.7,0.,1.};
 float  clmPurple[]={1.,0.,1.,1.};
 float  clmWhite[]={1,1,1,1};
+float  clmBlack[]={0,0,0,1};
 
 
 
@@ -33,10 +34,25 @@ void PDraw (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color )
    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, 0, PointCoord );
    glEnableVertexAttribArray ( 0 );
    //glUniform4fv(Un_ClrLoc,1 ,color);
-   glVertexAttrib3fv(COL_INDEX, color);
+   glVertexAttrib4fv(COL_INDEX, color);
    glDrawArrays ( mode, 0, n );
 
 }
+
+void PDraw3D (GLfloat* PointCoord, GLint n, GLenum mode, GLfloat* color )
+{
+   //glUniform1i(UnifGModeLoc,GMODE_PAINT );
+   glDisableVertexAttribArray ( TXCOORD_INDEX );// is required !!!! obligatorily !!!!!
+   // Load the vertex data
+   glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), PointCoord );
+   glEnableVertexAttribArray ( 0 );
+   glVertexAttrib4fv(COL_INDEX, color);
+   glDisableVertexAttribArray ( COL_INDEX );
+   glDrawArrays ( mode, 0, n );
+
+}
+
+
 
 int w_Width, w_Heigh; // current window from msg sizeng
 void GetWindowSise(HWND hWnd)

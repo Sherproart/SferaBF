@@ -60,6 +60,15 @@ void TPoligon::DrawLine()
 }
 //TPoligon::Draw----------------------
 
+void TPoligon::DrawLineP()
+{
+	glVertexAttribPointer ( POS_INDEX, 3, GL_FLOAT, GL_FALSE, 5*sizeof(SPoint), pnt );
+	glEnableVertexAttribArray ( POS_INDEX );
+	glVertexAttrib3fv(COL_INDEX, Red);
+    glDrawArrays(GL_LINE_STRIP, 0, cnt/10);
+
+}//TPoligon::DrawLineP--------------
+
 TSfera::TSfera(float R_, int Nz_, int Na_)
 {
     R = R_; Nz = Nz_; Na = Na_;
@@ -188,7 +197,7 @@ void TSfera::DrawPoligonR()
 {
     for (int i = 0; i < cnt; i++)
     {
-        pgn[i].DrawRndColor();
+        pgn[cnt-1-i].DrawRndColor();
     }
 
 }//TSfera::DrawPoligonR----------

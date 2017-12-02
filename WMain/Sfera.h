@@ -19,6 +19,7 @@ struct TPoligon {
     void Draw();
     void DrawRndColor();
     void DrawLine();
+	void DrawLineP();
 	void DrawMrk(int Pcnt, float* clr); // первые Pcnt точек
 
     int cnt;

@@ -6,6 +6,7 @@
 #include "PVRTMatrix.h"
 
 unsigned Tex1;
+extern int ButDown;
 
 unsigned Tex1Data[]={ // 0x00BBGGRR
 
@@ -48,7 +49,7 @@ rr=1;
 void Test2()
 {
 texture_init();
-SetViewport(0, 0, w_Width, w_Heigh);
+//SetViewport(0, 0, w_Width, w_Heigh);
 /*
 glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,5,4,0, GL_RGBA, GL_UNSIGNED_BYTE, Tex1Data);
 static int cnt=0; cnt++; if(cnt>2)cnt=0;
@@ -84,8 +85,8 @@ extern PVRTMATRIXf mvpMatrix;
 void Test3()
 {
 
-  GetWindowSise(MainHwnd);
-  SetViewport(0, 0, w_Width, w_Heigh);
+  //GetWindowSise(MainHwnd);
+  //SetViewport(0, 0, w_Width, w_Heigh);
 
   glUniform1i(UnifGModeLoc, GMODE_PAINT);
 
@@ -139,67 +140,130 @@ void TestS()
 {
  static int raz=1;
  if(raz){
-	GetWindowSise(MainHwnd);
-	SetViewport(0, 0, w_Width, w_Heigh);
+	//GetWindowSise(MainHwnd);
+	//SetViewport(0, 0, w_Width, w_Heigh);
 	glUniform1i(UnifGModeLoc, GMODE_PAINT);
 	//glVertexAttrib3fv(COL_INDEX, clmGreen);
 
-	glmRotate_X(60);
-	V_rotate(-20,0,1,0);
+	//glmRotate_X(60);
+	//V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
+	V_rotate(45,0,0,1);
+	V_rotate(20,1,0,0);
+
 
 	raz=0;
  }
 
  glClearColor ( 0.0, 0.0, 0.0, 1.0);
+ //glClearColor (1,1,1,1);
  glClear ( GL_COLOR_BUFFER_BIT );
 
-
- //glmRotate_X(0.2);
- glmRotate_Z(0.2);
+ static float ug=0;
+ if(ButDown)
+ {
+	glmRotate_X(1);
+	//ug+=0.2; printf("u=%.1f\r\n",ug);
+ }
+ //glmRotate_Z(1);
  //Y_rotate(0.2);
 
  Sf.DrawLine();
  Sf.pgn[0].DrawMrk(6,clmRed);
+ Sf.pgn[6].DrawLineP();
 
  mSwapBuffers();
 
 }//----
 
+void KubeDraw()
+{
+	static float ABCD[]={-200,150,-200, 200,150,-200,  200,-150,-200, -200,-150,-200};
+	static float ABCD1[]={-200,150,0, 200,150,0,  200,-150,0, -200,-150,0};
+	static float ABCD2[]={-200,150,200, 200,150,200,  200,-150,200, -200,-150,200};
+
+	static float AA[]={-200,150,-200, -200,150,200};
+	static float BB[]={200,150,-200,   200,150,200};
+	static float CC[]={200,-150,-200,  200,-150,200,};
+	static float DD[]={-200,-150,-200, -200,-150,200};
+
+    static int raz = 1;
+    if (raz) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		glUniform1i(UnifGModeLoc, GMODE_PAINT);
+		V_rotate(15,1,1,0);
+		static PVRTMATRIXf Msc;
+		PVRTMatrixScalingF(Msc, 0.5, 0.5, 0.5);
+		PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,Msc);
+		glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
+		raz=0;
+	}
+ 
+	glClearColor ( 1, 1, 1, 1);
+	glClear ( GL_COLOR_BUFFER_BIT );
+
+	PDraw3D(ABCD,4,GL_LINE_LOOP,clmBlack);
+	//PDraw3D(ABCD1,4,GL_LINE_LOOP,clmBlue);
+	PDraw3D(AA,2,GL_LINES,clmBlack);
+	float clr[]={0.5,0.5,1, 1};
+	PDraw3D(ABCD1,4,GL_TRIANGLE_FAN,clr);
+	PDraw3D(ABCD2,4,GL_LINE_LOOP,clmRed);
+
+
+	PDraw3D(BB,2,GL_LINES,clmBlack);
+	PDraw3D(CC,2,GL_LINES,clmBlack);
+	PDraw3D(DD,2,GL_LINES,clmBlack);
+
+	mSwapBuffers();
+
+
+}//----
 
 void TestABBA()
 {
 
-
     static int raz = 1;
     if (raz) {
-        GetWindowSise(MainHwnd);
-        SetViewport(0, 0, w_Width, w_Heigh);
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        Line(-400, 0, 400, 0, clmWhite);
-        Line(0, -400, 0, 400, clmWhite);
-        Bar(0, 100, 10, 110, clmGreen);
-        mSwapBuffers();
-        Line(-400, 0, 400, 0, clmWhite);
-        Line(0, -400, 0, 400, clmWhite);
-        Bar(0, 100, 10, 110, clmGreen);
-
         glUniform1i(UnifGModeLoc, GMODE_PAINT);
+
+		// координатная сетка
+        Line(-400, 0, 400, 0, clmWhite);
+        Line(0, -400, 0, 400, clmWhite);
+        Bar(0, 100, 10, 110, clmWhite); // начальное положение
+
+
         glmRotate_Z(20);
-        //glmTranslatef(100, 0, 0);
         Bar(0, 100, 10, 110, clmGreen);
+
+
         glmTranslatef(100, 0, 0);
-        //glmRotate_Z(20);
+		Bar(0, 100, 10, 110, clmRed);
+
         raz = 0;
     }
 
 
-    Bar(0, 100, 10, 110, clmRed);
+    //---------------
+
+	SetSimetricOrtho(w_Width, w_Heigh, 2000); // на начальную матрицу
+
+    glmTranslatef(100, 0, 0);
+    Bar(0, 100, 10, 110, clmBlue);
+
+    glmRotate_Z(20);
+    Bar(0, 100, 10, 110, clmYellow);
+
+
 
     mSwapBuffers();
 
 }//----
+
+
 

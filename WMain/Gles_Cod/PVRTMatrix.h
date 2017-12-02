@@ -13,6 +13,8 @@ public:
 	}
 	float f[16];	/*!< Array of float */
     void print();
+	void print2();
+    void print5();
     void Set(
         float a0, float a4, float a8,  float a12,
         float a1, float a5, float a9,  float a13,
@@ -112,7 +114,7 @@ void PVRTMatrixOrthoLHF(
 // A - rotate angle
 void glmRotate_V(PVRTMATRIXf	&mOut,const float A, float Vx, float Vy, float Vz);
 void TestMatr1();
-	
+void TestMatrVect();	
 		
 	
 #endif

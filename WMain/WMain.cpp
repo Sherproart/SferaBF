@@ -16,6 +16,7 @@ int Fl_FonEnabled=1;
 
 HWND MainHwnd;
 HDC hdc_mem;
+int ButDown;
 
 // √лобальные переменные:
 HINSTANCE hInst;								// текущий экземпл€р
@@ -173,7 +174,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
-
+int i;
 	switch (message)
 	{
 
@@ -193,8 +194,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case ID_32832:
 			//TestS();
-            TestMatr1();
-			printf("----");
+            TestMatrVect();
+            //TestMatr1();
+			printf("Ok");
 			Sleep(300);
 			break;
 
@@ -204,17 +206,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
-    case WM_LBUTTONDOWN: 
+    case WM_LBUTTONDOWN: ButDown^=1;
 		break;
 
 
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		//Draw(); // -----
-		TestS();
+		//KubeDraw();
+		//TestS();
         //TestABBA();
-       // TestMatr1();
-		Sleep(10);
+		//TestMatrVect();
+		Sleep(100);
 		EndPaint(hWnd, &ps);
 		break;
 

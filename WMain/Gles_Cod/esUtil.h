@@ -297,7 +297,8 @@ enum gm {GMODE_PAINT,        // рисование примитивов
 
 void mSwapBuffers();
 
-void SetViewport(int X0, int  Y0, int  W, int  H);
+void SetViewport(int X0, int  Y0, int  W, int  H, int D);
+void SetSimetricOrtho(float W, float H, float D);
 
 extern GLint UnifTexLoc;
 extern GLint UnifColLoc;
@@ -316,5 +317,6 @@ void Y_rotate(float Angle);
 void V_rotate(float Angle, float vx, float vy, float vz);
 
 void TestABBA();
+void KubeDraw();
 
 #endif // ESUTIL_H

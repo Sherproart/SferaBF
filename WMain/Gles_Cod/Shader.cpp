@@ -12,7 +12,7 @@ const double pi = 4 * atan(1.);
 const double RadGr = 180 / pi;
 const double GrRad = pi / 180;
 
-float ClipPlane[] = {0,1,0,0};
+float ClipPlane[] = {0,0,1,0};//-5
 
 GLuint m_vertShaderHandle;   // The OpenGL vertex shader id
 GLuint m_fragShaderHandle;   // The OpenGL fragment shader id
@@ -82,7 +82,7 @@ GLbyte FragShader[] =
   "void main()"
   "{"
       // Reject fragments behind the clip plane
-    "if (u_clipDist < 0.0) discard;"
+    //"if (u_clipDist < 0.0) discard;"
        
      "if (GMode == GMODE_PAINT)"
 	    "gl_FragColor = v_Color;" /* отображение геометрической фигуры */
@@ -114,7 +114,11 @@ GLbyte VertShader[] =
 	   "v_Color = a_Color;"
    
        // Compute the distance between the vertex and the clip plane
-       "u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) + u_clipPlane.w;"
+       //"u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
+
+	   // это клипинг выходных координат, то есть клипинг относительно
+	   // системы координа выходного куба [-1,1][-1,1][-1,1]
+	   //"u_clipDist = dot(gl_Position.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
        
    "}"
 };
@@ -225,22 +229,21 @@ int Init(ESContext *esContext)
 
    GetAtribAndUniformLocation(); 
 
-   //glViewport ( 0, 0, esContext->width, esContext->height );
-   //SetViewport(0, 0, esContext->width, esContext->height);
-   //SetViewport(0, 0, w_Width, w_Heigh);
-
    UnifMvpMatrixLoc=glGetUniformLocation(m_progHandle, "u_mvpMatrix");
    PVRTMatrixIdentityF(mvpMatrix);
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 
-   SetViewport(0, 0, esContext->width, esContext->height);
+   //SetViewport(0, 0, esContext->width, esContext->height,2000);
+   glViewport(0, 0, esContext->width, esContext->height);
+
+   PVRTMatrixIdentityF(mvpMatrix);
+   glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
    glUniform4fv(UnifClipPlane, 1, ClipPlane);
-      //glmOrtho(0, w_Width, w_Heigh, 0, 0, 1);
-   //mSwapBuffers();
 
-
-   //glClearColor ( 0.0, 0.0, 0.0, 1.0);
-   //glClear ( GL_COLOR_BUFFER_BIT );
+   glUniform1i(UnifGModeLoc, GMODE_PAINT);
+   glClearColor ( 0.0, 0.0, 0.0, 1.0);
+   glClear ( GL_COLOR_BUFFER_BIT );
 
    // PtintAttribs(3);
 
@@ -461,12 +464,7 @@ void glmOrtho(float left,float right,float bottom ,float top,float nearZ,float f
 
     PVRTMATRIXf ort;
     PVRTMatrixOrthoLHF(ort,w,h,nearZ,farZ);
-    
-	//ort.f[12]=-0.9998;// сдвиг по X в единицах исходных (то есть исх куб x,y,x=(-1...+1))
-	//	ort.f[13]=1.0;    // сдвиг по Y
-
-
-    PVRTMatrixMultiplyF(mvpMatrix,ort,mvpMatrix);
+    PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,ort);
     glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
@@ -563,9 +561,9 @@ void glmRotate_xy(float Angle,float x0, float y0)
    PVRTMatrixTranslationF(T_,-x0,-y0,0);
    PVRTMatrixRotationZF(rot,Angle*GrRad);
 
-   PVRTMatrixMultiplyF(mvpMatrix,T,mvpMatrix);
-   PVRTMatrixMultiplyF(mvpMatrix,rot,mvpMatrix);
-   PVRTMatrixMultiplyF(mvpMatrix,T_,mvpMatrix);
+   PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,T);
+   PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,rot);
+   PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,T_);
 
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
@@ -579,7 +577,7 @@ if(raz){
    PVRTMatrixRotationXF(rot,Angle*GrRad); // это можно сделать глобальным и вычислять раз
    raz=0;
 }
-   PVRTMatrixMultiplyF(mvpMatrix,rot,mvpMatrix);
+   PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,rot);
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
@@ -588,7 +586,7 @@ void glmRotate_Z(float Angle)
 {
    PVRTMATRIXf rot;
    PVRTMatrixRotationZF(rot,Angle*GrRad); // это можно сделать глобальным и вычислять раз
-   PVRTMatrixMultiplyF(mvpMatrix,rot,mvpMatrix);
+   PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,rot);
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
@@ -598,7 +596,7 @@ void V_rotate(float Angle, float vx, float vy, float vz)
 {
 	PVRTMATRIXf Rotate_mtr; // for constant rotate axis and angle
 	glmRotate_V(Rotate_mtr,Angle*GrRad,vx, vy,  vz);
-	PVRTMatrixMultiplyF(mvpMatrix,Rotate_mtr,mvpMatrix);
+	PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,Rotate_mtr);
 	glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 
 }//--------------
@@ -611,7 +609,7 @@ void Y_rotate(float Angle)
 		glmRotate_V(Rotate_mtr,Angle*GrRad,0, 1, 0);
 		raz=0;
 	}
-	PVRTMatrixMultiplyF(mvpMatrix,Rotate_mtr,mvpMatrix);
+	PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,Rotate_mtr);
 	glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 
 }//--------------
@@ -621,8 +619,7 @@ void glmTranslatef(float x,float y,float z)
 {
    PVRTMATRIXf t;
    PVRTMatrixTranslationF(t,x,y,z);
-   PVRTMatrixMultiplyF(mvpMatrix,t,mvpMatrix);//tr
-
+   PVRTMatrixMultiplyF(mvpMatrix, mvpMatrix, t);
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
@@ -636,11 +633,29 @@ void freeEGLContext()
    eglTerminate(display);
 }
 
-void SetViewport(int X0, int  Y0, int  W, int  H)
+// Здесь выполняются два действия:
+//  * Устанавливается квадрат вывода (Viewport)
+//  * Устанавливается матрица переводящая куб 
+//    ([-W,W][-H,Y][-D,D]) в куб
+//    ([-1,1][-1,1][-1,1])
+// *** W,H,D должны быть парными, поск. это int, который
+//           потом делится на 2.
+void SetViewport(int X0, int  Y0, int  W, int  H, int D)
 {
     glViewport(X0, Y0, W, H);
     PVRTMatrixIdentityF(mvpMatrix);
-    //glmOrtho(0, W, 0, H, -100, 30);
-	glmOrtho(-W/2, W/2, -H/2, H/2, -1000, 1000);
-    return;
-}
+	glmOrtho(-W/2, W/2, -H/2, H/2, -D/2, D/2);
+    
+}//SetViewport---------------
+
+
+//  * Устанавливается матрица переводящая куб
+//    ([-W,W][-H,Y][-D,D]) в куб
+//    ([-1,1][-1,1][-1,1])
+// *** W,H,D желательны парными для более точного предсказания результата
+void SetSimetricOrtho(float W, float H, float D)
+{
+    PVRTMatrixIdentityF(mvpMatrix);
+	glmOrtho(-W/2, W/2, -H/2, H/2, -D/2, D/2);
+
+}//SetOrtho--------------

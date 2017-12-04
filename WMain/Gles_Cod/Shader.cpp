@@ -12,7 +12,7 @@ const double pi = 4 * atan(1.);
 const double RadGr = 180 / pi;
 const double GrRad = pi / 180;
 
-float ClipPlane[] = {0,0,1,0};//-5
+float ClipPlane[] = {0,0,1,-5};//-5
 
 GLuint m_vertShaderHandle;   // The OpenGL vertex shader id
 GLuint m_fragShaderHandle;   // The OpenGL fragment shader id
@@ -82,7 +82,7 @@ GLbyte FragShader[] =
   "void main()"
   "{"
       // Reject fragments behind the clip plane
-    //"if (u_clipDist < 0.0) discard;"
+    "if (u_clipDist < 0.0) discard;"
        
      "if (GMode == GMODE_PAINT)"
 	    "gl_FragColor = v_Color;" /* отображение геометрической фигуры */
@@ -114,7 +114,7 @@ GLbyte VertShader[] =
 	   "v_Color = a_Color;"
    
        // Compute the distance between the vertex and the clip plane
-       //"u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
+       "u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
 
 	   // это клипинг выходных координат, то есть клипинг относительно
 	   // системы координа выходного куба [-1,1][-1,1][-1,1]

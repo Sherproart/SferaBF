@@ -142,6 +142,7 @@ void PVRTMatrixMultiplyF(
 	PVRTMATRIXf mRet;
 
 	/* Perform calculation on a dummy matrix (mRet) */
+    /*
 	mRet.f[ 0] = mA.f[ 0]*mB.f[ 0] + mA.f[ 4]*mB.f[ 1] + mA.f[ 8]*mB.f[ 2] + mA.f[12]*mB.f[3];
 	mRet.f[ 1] = mA.f[ 1]*mB.f[ 0] + mA.f[ 5]*mB.f[ 1] + mA.f[ 9]*mB.f[ 2] + mA.f[13]*mB.f[3];
 	mRet.f[ 2] = mA.f[ 2]*mB.f[ 0] + mA.f[ 6]*mB.f[ 1] + mA.f[10]*mB.f[ 2] + mA.f[14]*mB.f[3];
@@ -161,6 +162,30 @@ void PVRTMatrixMultiplyF(
 	mRet.f[13] = mA.f[ 1]*mB.f[12] + mA.f[ 5]*mB.f[13] + mA.f[ 9]*mB.f[14] + mA.f[13]*mB.f[15];
 	mRet.f[14] = mA.f[ 2]*mB.f[12] + mA.f[ 6]*mB.f[13] + mA.f[10]*mB.f[14] + mA.f[14]*mB.f[15];
 	mRet.f[15] = mA.f[ 3]*mB.f[12] + mA.f[ 7]*mB.f[13] + mA.f[11]*mB.f[14] + mA.f[15]*mB.f[15];
+    */
+
+    /* Old wariant */
+    
+    mRet.f[0] = mA.f[0] * mB.f[0] + mA.f[1] * mB.f[4] + mA.f[2] * mB.f[8] + mA.f[3] * mB.f[12];
+    mRet.f[1] = mA.f[0] * mB.f[1] + mA.f[1] * mB.f[5] + mA.f[2] * mB.f[9] + mA.f[3] * mB.f[13];
+    mRet.f[2] = mA.f[0] * mB.f[2] + mA.f[1] * mB.f[6] + mA.f[2] * mB.f[10] + mA.f[3] * mB.f[14];
+    mRet.f[3] = mA.f[0] * mB.f[3] + mA.f[1] * mB.f[7] + mA.f[2] * mB.f[11] + mA.f[3] * mB.f[15];
+
+    mRet.f[4] = mA.f[4] * mB.f[0] + mA.f[5] * mB.f[4] + mA.f[6] * mB.f[8] + mA.f[7] * mB.f[12];
+    mRet.f[5] = mA.f[4] * mB.f[1] + mA.f[5] * mB.f[5] + mA.f[6] * mB.f[9] + mA.f[7] * mB.f[13];
+    mRet.f[6] = mA.f[4] * mB.f[2] + mA.f[5] * mB.f[6] + mA.f[6] * mB.f[10] + mA.f[7] * mB.f[14];
+    mRet.f[7] = mA.f[4] * mB.f[3] + mA.f[5] * mB.f[7] + mA.f[6] * mB.f[11] + mA.f[7] * mB.f[15];
+
+    mRet.f[8] = mA.f[8] * mB.f[0] + mA.f[9] * mB.f[4] + mA.f[10] * mB.f[8] + mA.f[11] * mB.f[12];
+    mRet.f[9] = mA.f[8] * mB.f[1] + mA.f[9] * mB.f[5] + mA.f[10] * mB.f[9] + mA.f[11] * mB.f[13];
+    mRet.f[10] = mA.f[8] * mB.f[2] + mA.f[9] * mB.f[6] + mA.f[10] * mB.f[10] + mA.f[11] * mB.f[14];
+    mRet.f[11] = mA.f[8] * mB.f[3] + mA.f[9] * mB.f[7] + mA.f[10] * mB.f[11] + mA.f[11] * mB.f[15];
+
+    mRet.f[12] = mA.f[12] * mB.f[0] + mA.f[13] * mB.f[4] + mA.f[14] * mB.f[8] + mA.f[15] * mB.f[12];
+    mRet.f[13] = mA.f[12] * mB.f[1] + mA.f[13] * mB.f[5] + mA.f[14] * mB.f[9] + mA.f[15] * mB.f[13];
+    mRet.f[14] = mA.f[12] * mB.f[2] + mA.f[13] * mB.f[6] + mA.f[14] * mB.f[10] + mA.f[15] * mB.f[14];
+    mRet.f[15] = mA.f[12] * mB.f[3] + mA.f[13] * mB.f[7] + mA.f[14] * mB.f[11] + mA.f[15] * mB.f[15];
+    
 
 	/* Copy result in pResultMatrix */
 	mOut = mRet;

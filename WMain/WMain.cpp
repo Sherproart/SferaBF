@@ -194,8 +194,9 @@ int i;
 
 		case ID_32832:
 			//TestS();
-            TestMatrVect();
-            //TestMatr1();
+            //TestMatrVect();
+            //TestABBA();
+            TestMatr1();
 			printf("Ok");
 			Sleep(300);
 			break;
@@ -217,7 +218,7 @@ int i;
 		//TestS();
         //TestABBA();
 		//TestMatrVect();
-		Sleep(100);
+		//Sleep(100);
 		EndPaint(hWnd, &ps);
 		break;
 

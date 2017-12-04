@@ -142,14 +142,18 @@ void TestS()
  if(raz){
 	//GetWindowSise(MainHwnd);
 	//SetViewport(0, 0, w_Width, w_Heigh);
+    SetSimetricOrtho(w_Width, w_Heigh, 1000);
 	glUniform1i(UnifGModeLoc, GMODE_PAINT);
 	//glVertexAttrib3fv(COL_INDEX, clmGreen);
 
 	//glmRotate_X(60);
 	//V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
+
 	V_rotate(45,0,0,1);
 	V_rotate(20,1,0,0);
+
+
 
 
 	raz=0;
@@ -162,8 +166,9 @@ void TestS()
  static float ug=0;
  if(ButDown)
  {
-	glmRotate_X(1);
+	//glmRotate_X(1);
 	//ug+=0.2; printf("u=%.1f\r\n",ug);
+     glmRotate_Z(1);
  }
  //glmRotate_Z(1);
  //Y_rotate(0.2);
@@ -189,15 +194,21 @@ void KubeDraw()
 
     static int raz = 1;
     if (raz) {
+        SetSimetricOrtho(w_Width, w_Heigh, 1000);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 		glUniform1i(UnifGModeLoc, GMODE_PAINT);
-		V_rotate(15,1,1,0);
+
+        V_rotate(15, 1, 1, 0);
+
 		static PVRTMATRIXf Msc;
 		PVRTMatrixScalingF(Msc, 0.5, 0.5, 0.5);
 		PVRTMatrixMultiplyF(mvpMatrix,mvpMatrix,Msc);
 		glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
+		//V_rotate(15,1,1,0);
+
 
 		raz=0;
 	}
@@ -227,6 +238,8 @@ void TestABBA()
 
     static int raz = 1;
     if (raz) {
+
+        SetSimetricOrtho(w_Width, w_Heigh, 2000); // на начальную матрицу
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -259,7 +272,18 @@ void TestABBA()
     glmRotate_Z(20);
     Bar(0, 100, 10, 110, clmYellow);
 
+    glmRotate_Z(20);
+    Bar(0, 100, 10, 110, clmYellow);
 
+
+    glmRotate_Z(20);
+    Bar(0, 100, 10, 110, clmYellow);
+
+    glmRotate_Z(20);
+    Bar(0, 100, 10, 110, clmYellow);
+
+    glmRotate_Z(20);
+    Bar(0, 100, 10, 110, clmYellow);
 
     mSwapBuffers();
 

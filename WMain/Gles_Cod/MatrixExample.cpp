@@ -106,7 +106,8 @@ void TestMatr1()
         );
 
 
-    PVRTMatrixMultiplyF(C, B, V);
+    //PVRTMatrixMultiplyF(C, B, V);
+    PVRTMatrixMultiplyF(C, V, B);
     B.print();
     V.print();
     C.print();

@@ -77,10 +77,10 @@ void TestMatr1()
         );
 
     Sc.Set(
-        2, 0, 0, 0,
-        0, 11, 0, 0,
-        0, 0, 8,  0,
-        0, 0, 0,  1
+        0.1, 0, 0, 0,
+        0, .1, 0,  0,
+        0, 0, .1,  0,
+        0, 0,  0,   1
         );
 
     P.Set(
@@ -107,10 +107,10 @@ void TestMatr1()
 
 
     //PVRTMatrixMultiplyF(C, B, V);
-    PVRTMatrixMultiplyF(C, V, B);
-    B.print();
-    V.print();
-    C.print();
+    PVRTMatrixMultiplyF(C, Sc, B);
+    Sc.print5();
+    B.print5();
+    C.print5();
 
 
 }//------------------

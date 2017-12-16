@@ -195,8 +195,8 @@ int i;
 		case ID_32832:
 			//TestS();
             //TestMatrVect();
-            //TestABBA();
-            TestMatr1();
+            TestABBA();
+            //TestMatr1();
 			printf("Ok");
 			Sleep(300);
 			break;
@@ -212,14 +212,14 @@ int i;
 
 
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
+		//hdc = BeginPaint(hWnd, &ps);
 		//Draw(); // -----
 		//KubeDraw();
-		//TestS();
+		TestS();
         //TestABBA();
 		//TestMatrVect();
-		//Sleep(100);
-		EndPaint(hWnd, &ps);
+		Sleep(10);
+		//EndPaint(hWnd, &ps);
 		break;
 
 	case WM_DESTROY:

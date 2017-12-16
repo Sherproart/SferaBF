@@ -113,6 +113,9 @@ void PVRTMatrixOrthoLHF(
 // rotate around vector Vx, Vy, Vz
 // A - rotate angle
 void glmRotate_V(PVRTMATRIXf	&mOut,const float A, float Vx, float Vy, float Vz);
+
+void glmScale(float sX, float sY, float sZ);
+
 void TestMatr1();
 void TestMatrVect();	
 		

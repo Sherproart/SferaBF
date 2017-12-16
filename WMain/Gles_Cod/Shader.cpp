@@ -29,6 +29,7 @@ GLint Un_ClrLoc;
 GLint UnifGModeLoc; // печать шрифта, шрифта с фоном, рисование
 GLint UnifMvpMatrixLoc;
 GLint UnifClipPlane;
+GLint UnifLightStr;
 //-----------------------
 
 void GetAtribAndUniformLocation()
@@ -37,6 +38,7 @@ void GetAtribAndUniformLocation()
    UnifGModeLoc = glGetUniformLocation(m_progHandle, "GMode");
    Un_ClrLoc = glGetUniformLocation(m_progHandle, "PColor");
    UnifClipPlane = glGetUniformLocation(m_progHandle, "u_clipPlane");
+   UnifLightStr = glGetUniformLocation(m_progHandle, "Light");
 }
 
 
@@ -70,6 +72,7 @@ GLbyte FragShader[] =
   "#define GMODE_FONT_TON   1\n"
   "#define GMODE_BMP        4\n"
 
+    "uniform struct Light{float R; float G; float B;};"
   "precision mediump float;"
   "uniform sampler2D Texture;"
   //"uniform vec4 u_FntCol;"
@@ -246,6 +249,8 @@ int Init(ESContext *esContext)
    glClear ( GL_COLOR_BUFFER_BIT );
 
    // PtintAttribs(3);
+
+
 
    return 1;
 }
@@ -619,7 +624,7 @@ void glmTranslatef(float x,float y,float z)
 {
    PVRTMATRIXf t;
    PVRTMatrixTranslationF(t,x,y,z);
-   PVRTMatrixMultiplyF(mvpMatrix, mvpMatrix, t);
+   PVRTMatrixMultiplyF(mvpMatrix,t, mvpMatrix );
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 }
 
@@ -659,3 +664,12 @@ void SetSimetricOrtho(float W, float H, float D)
 	glmOrtho(-W/2, W/2, -H/2, H/2, -D/2, D/2);
 
 }//SetOrtho--------------
+
+void glmScale(float sX, float sY, float sZ)
+{
+	PVRTMATRIXf S;
+	PVRTMatrixScalingF(S, sX, sY, sZ);
+    PVRTMatrixMultiplyF(mvpMatrix,S, mvpMatrix);
+    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
+
+}//------------

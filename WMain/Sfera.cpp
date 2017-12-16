@@ -41,8 +41,11 @@ void RandomColor(float* out) {
 
 void TPoligon::Draw()
 {
+    glVertexAttribPointer(POS_INDEX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt);
+    glEnableVertexAttribArray(POS_INDEX);
+    glVertexAttrib3fv(COL_INDEX, Color);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
 
-   // glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
 }
 
 // полигон со случайным цветом
@@ -74,8 +77,8 @@ TSfera::TSfera(float R_, int Nz_, int Na_)
     R = R_; Nz = Nz_; Na = Na_;
     dFi = Pi / Nz;
     dLa = 2*Pi / Na;
-    //Create();
-    CreateFull();
+    Create();
+    //CreateFull();
 }
 
 void TSfera::Create()
@@ -134,6 +137,8 @@ void TSfera::Create()
     }
     RandomColor(RndColor);
     pgn[Np-1].SetColor(RndColor);
+
+    cnt = Np;
 
 
 

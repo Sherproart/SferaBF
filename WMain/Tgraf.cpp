@@ -146,15 +146,12 @@ void TestS()
 	glUniform1i(UnifGModeLoc, GMODE_PAINT);
 	//glVertexAttrib3fv(COL_INDEX, clmGreen);
 
-	//glmRotate_X(60);
+	//glmRotate_X(0);
 	//V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
 
 	V_rotate(45,0,0,1);
 	V_rotate(20,1,0,0);
-
-
-
 
 	raz=0;
  }
@@ -166,16 +163,15 @@ void TestS()
  static float ug=0;
  if(ButDown)
  {
-	//glmRotate_X(1);
-	//ug+=0.2; printf("u=%.1f\r\n",ug);
-     glmRotate_Z(1);
+     glmRotate_Z(0.1);
  }
- //glmRotate_Z(1);
- //Y_rotate(0.2);
 
+ Sf.DrawPoligonR();
+ /*
  Sf.DrawLine();
  Sf.pgn[0].DrawMrk(6,clmRed);
  Sf.pgn[6].DrawLineP();
+ */
 
  mSwapBuffers();
 
@@ -233,34 +229,46 @@ void KubeDraw()
 
 }//----
 
+void Triang3D(float x, float y, float z, float* clr)
+{
+    float V[] = { x,y,z, x + 5,y,z, x + 5,y + 5,z };
+    PDraw3D(V,3, GL_TRIANGLES, clr);
+}//-------
+
 void TestABBA()
 {
 
     static int raz = 1;
     if (raz) {
 
-        SetSimetricOrtho(w_Width, w_Heigh, 2000); // на начальную матрицу
+        //SetSimetricOrtho(w_Width, w_Heigh, 2000); // на начальную матрицу
+
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         glUniform1i(UnifGModeLoc, GMODE_PAINT);
+
+     mvpMatrix.print5();
+        //glmTranslatef(100, 0, 0);
+        glmScale(2. / w_Width, 2. / w_Heigh, 2. / 2000);
 
 		// координатная сетка
         Line(-400, 0, 400, 0, clmWhite);
         Line(0, -400, 0, 400, clmWhite);
         Bar(0, 100, 10, 110, clmWhite); // начальное положение
 
+        Triang3D(30,30,0, clmGreen);
+        Triang3D(30, 30, -200, clmRed);
 
-        glmRotate_Z(20);
-        Bar(0, 100, 10, 110, clmGreen);
+       // glmRotate_Z(20);
+       // Bar(0, 100, 10, 110, clmGreen);
 
 
-        glmTranslatef(100, 0, 0);
-		Bar(0, 100, 10, 110, clmRed);
+ 
 
         raz = 0;
     }
-
+    mSwapBuffers(); return;
 
     //---------------
 

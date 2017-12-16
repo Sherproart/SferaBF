@@ -13,6 +13,7 @@ float Black[]= { 0,0,0,1 };
 float Pi = atan((float)1) * 4;
 
 TSfera Sf(200,12,24);
+//TSfera Sf(200, 40, 80);
 
 /**
  создает пустой массив точек длиной cnt
@@ -43,6 +44,10 @@ void TPoligon::Draw()
 {
     glVertexAttribPointer(POS_INDEX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt);
     glEnableVertexAttribArray(POS_INDEX);
+
+    glVertexAttribPointer(NORMAL_INX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt->n);
+    glEnableVertexAttribArray(NORMAL_INX);
+
     glVertexAttrib3fv(COL_INDEX, Color);
     glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
 
@@ -51,7 +56,11 @@ void TPoligon::Draw()
 // полигон со случайным цветом
 void TPoligon::DrawRndColor()
 {
-    Draw();
+    glVertexAttribPointer(POS_INDEX, 3, GL_FLOAT, GL_FALSE, sizeof(SPoint), pnt);
+    glEnableVertexAttribArray(POS_INDEX);
+    glVertexAttrib3fv(COL_INDEX, Color);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
+
 }//TPoligon::DrawRndColor---------------
 
 void TPoligon::DrawLine()
@@ -92,7 +101,7 @@ void TSfera::Create()
 
     pgn[0].Create(Na + 2); // веерн полигон-конус
     pgn[0].pnt[0].Set(0, 0, R); // ближний полюс (вершина веера)
-    pgn[0].pnt[0].SetN(0, 0, 1);
+    pgn[0].pnt[0].PosToN();
     RandomColor(RndColor);
     pgn[0].SetColor(RndColor);
     for (int i = 0; i <= Na; i++)
@@ -121,6 +130,13 @@ void TSfera::Create()
             pgn[ind].pnt[2].Set(Rd*cos(La2), Rd*sin(La2), Zd);
             pgn[ind].pnt[3].Set(Rd*cos(La1), Rd*sin(La1), Zd);
 
+            // * для сфери нормаль співпадає з координатами
+            pgn[ind].pnt[0].PosToN();
+            pgn[ind].pnt[1].PosToN();
+            pgn[ind].pnt[2].PosToN();
+            pgn[ind].pnt[3].PosToN();
+
+
             RandomColor(RndColor);
             pgn[ind].SetColor(RndColor);
             ind++;
@@ -129,7 +145,7 @@ void TSfera::Create()
 
     pgn[Np-1].Create(Na + 2); // веерн полигон-конус
     pgn[Np-1].pnt[0].Set(0, 0, -R); // дальний полюс (вершина веера)
-    pgn[Np-1].pnt[0].SetN(0, 0, -1);
+    pgn[Np-1].pnt[0].PosToN();
     for (int i = 0; i <= Na; i++)
     {
         pgn[Np-1].pnt[i + 1].Set(R1*cos(dLa*i), R1*sin(dLa*i), -Z1);
@@ -203,6 +219,15 @@ void TSfera::DrawPoligonR()
     for (int i = 0; i < cnt; i++)
     {
         pgn[cnt-1-i].DrawRndColor();
+    }
+
+}//TSfera::DrawPoligonR----------
+
+void TSfera::DrawPoligonR1()
+{
+    for (int i = 0; i < cnt; i++)
+    {
+        pgn[cnt - 1 - i].Draw();
     }
 
 }//TSfera::DrawPoligonR----------

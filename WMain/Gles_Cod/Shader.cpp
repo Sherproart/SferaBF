@@ -12,7 +12,7 @@ const double pi = 4 * atan(1.);
 const double RadGr = 180 / pi;
 const double GrRad = pi / 180;
 
-float ClipPlane[] = {0,0,1,-5};//-5
+float ClipPlane[] = {0,0,1,0.3};//-5
 
 GLuint m_vertShaderHandle;   // The OpenGL vertex shader id
 GLuint m_fragShaderHandle;   // The OpenGL fragment shader id
@@ -29,7 +29,10 @@ GLint Un_ClrLoc;
 GLint UnifGModeLoc; // печать шрифта, шрифта с фоном, рисование
 GLint UnifMvpMatrixLoc;
 GLint UnifClipPlane;
-GLint UnifLightStr;
+
+struct DLight { GLint dir; GLint I; }  uDLight1;
+GLint K_ambient, K_diffuse, K_specular;
+GLint I_ambient; // интенсивность рассеяного света, не завис от источника
 //-----------------------
 
 void GetAtribAndUniformLocation()
@@ -38,7 +41,21 @@ void GetAtribAndUniformLocation()
    UnifGModeLoc = glGetUniformLocation(m_progHandle, "GMode");
    Un_ClrLoc = glGetUniformLocation(m_progHandle, "PColor");
    UnifClipPlane = glGetUniformLocation(m_progHandle, "u_clipPlane");
-   UnifLightStr = glGetUniformLocation(m_progHandle, "Light");
+   uDLight1.dir = glGetUniformLocation(m_progHandle, "DLight1.dir");
+   uDLight1.I = glGetUniformLocation(m_progHandle, "DLight1.I");
+   K_ambient = glGetUniformLocation(m_progHandle, "G_ambient");
+   K_diffuse = glGetUniformLocation(m_progHandle, "G_diffuse");
+   K_specular = glGetUniformLocation(m_progHandle, "G_specular");
+   I_ambient = glGetUniformLocation(m_progHandle, "L_ambient");
+}
+
+void SetLight1() {
+    glUniform4f(uDLight1.dir, -1, -1, -1, 0);
+    glUniform1f(uDLight1.I, 1);
+    glUniform1f(I_ambient, 1);
+    glUniform1f(K_ambient, 0.1);
+    glUniform1f(K_diffuse, 1);
+    glUniform1f(K_specular, 5000);
 }
 
 
@@ -72,24 +89,37 @@ GLbyte FragShader[] =
   "#define GMODE_FONT_TON   1\n"
   "#define GMODE_BMP        4\n"
 
-    "uniform struct Light{float R; float G; float B;};"
   "precision mediump float;"
+
+  "struct Light{vec4 dir; float I;};" // направление, интенсивность источника света
+  "uniform Light DLight1;"
+  "uniform float G_ambient;" // коэффициент фонового освещения
+  "uniform float G_diffuse;" // коэффициент зеркального освещения
+  "uniform float G_specular;" // коэффициент диффузного освещения
+  "uniform float L_ambient;"  // интенсивность рассеяного света, не завис от источника
+
   "uniform sampler2D Texture;"
-  //"uniform vec4 u_FntCol;"
   "uniform int GMode;"
   "uniform vec4 PColor;"
   "varying vec2 v_texCoord;"
   "varying mediump vec4 v_Color;"
-    "varying float u_clipDist;"
+  "varying mediump vec4 v_Normal;"
+  "varying float v_clipDist;"
 
   "void main()"
   "{"
-      // Reject fragments behind the clip plane
-    "if (u_clipDist < 0.0) discard;"
-       
-     "if (GMode == GMODE_PAINT)"
-	    "gl_FragColor = v_Color;" /* отображение геометрической фигуры */
-        //"gl_FragColor = PColor;" /* отображение геометрической фигуры */
+    "if (GMode == GMODE_PAINT){"
+        //"if (v_clipDist < 0.0) gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);"
+        //"else gl_FragColor = v_Color;" /* отображение геометрической фигуры */
+        //"gl_FragColor = (v_Normal.x/200.0)*v_Color;"
+        //"gl_FragColor = v_Color;" /* отображение геометрической фигуры */
+        "vec4 V=vec4(0.0, 0.0, 1.0, 0);" // направление на наблюдателя
+        "float I = dot(normalize(v_Normal),-DLight1.dir)*G_diffuse*DLight1.I;"
+        "I = max(0.0, I) + G_ambient*L_ambient;"
+        "float H_dot_N=dot(normalize(-DLight1.dir+V),normalize(v_Normal));"
+        "I= I+ pow(H_dot_N,10.0)*G_specular*DLight1.I;"
+        "gl_FragColor = v_Color*I;"
+    "}"
      "else {"
         "gl_FragColor = texture2D(Texture, v_texCoord);" /* отображение шрифта или картинки */
 		//"if (gl_FragCoord.y < 500.0)"
@@ -102,26 +132,30 @@ GLbyte FragShader[] =
 GLbyte VertShader[] =
 {
    "uniform mediump mat4 u_mvpMatrix;"
-   "attribute highp vec4 a_pos;"
-   "attribute mediump vec2 a_txCoord;"
-   "attribute mediump vec4 a_Color;"
-   "varying mediump vec2 v_texCoord;"
-   "varying mediump vec4 v_Color;"
-    "uniform vec4 u_clipPlane;"
-    "varying float u_clipDist;"
+   "attribute vec4 a_pos;"
+   "attribute vec2 a_txCoord;"
+   "attribute vec4 a_Color;"
+   "attribute vec4 a_Normal;"
+   "varying  vec4 v_Normal;"
+   "varying  vec2 v_texCoord;"
+   "varying  vec4 v_Color;"
+   "uniform vec4 u_clipPlane;"
+   "varying float v_clipDist;"
 
    "void main()"
    "{"
        "gl_Position = u_mvpMatrix*a_pos;"
        "v_texCoord = a_txCoord;"
-	   "v_Color = a_Color;"
+       "v_Color = a_Color;"
+       "v_Normal = u_mvpMatrix*a_Normal;"
    
        // Compute the distance between the vertex and the clip plane
-       "u_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
+       // относительно координат модели
+       //"v_clipDist = dot(a_pos.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
 
 	   // это клипинг выходных координат, то есть клипинг относительно
-	   // системы координа выходного куба [-1,1][-1,1][-1,1]
-	   //"u_clipDist = dot(gl_Position.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
+	   // системы координат выходного куба [-1,1][-1,1][-1,1]
+	   "v_clipDist = dot(gl_Position.xyz, u_clipPlane.xyz) - u_clipPlane.w;"
        
    "}"
 };
@@ -205,6 +239,7 @@ int Init(ESContext *esContext)
    glBindAttribLocation ( m_progHandle, POS_INDEX, "a_pos" );
    glBindAttribLocation ( m_progHandle, TXCOORD_INDEX, "a_txCoord" );
    glBindAttribLocation ( m_progHandle, COL_INDEX, "a_Color" );
+   glBindAttribLocation(m_progHandle, NORMAL_INX, "a_Normal");
 
    glLinkProgram( m_progHandle );
 
@@ -250,7 +285,7 @@ int Init(ESContext *esContext)
 
    // PtintAttribs(3);
 
-
+   SetLight1();
 
    return 1;
 }

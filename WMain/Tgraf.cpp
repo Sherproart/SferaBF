@@ -150,8 +150,8 @@ void TestS()
 	//V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
 
-	V_rotate(45,0,0,1);
-	V_rotate(20,1,0,0);
+	//V_rotate(45,0,0,1);
+	//V_rotate(20,1,0,0);
 
 	raz=0;
  }
@@ -164,14 +164,15 @@ void TestS()
  if(ButDown)
  {
      glmRotate_Z(0.1);
+     V_rotate(0.2, 1, 0, 0);
  }
 
- Sf.DrawPoligonR();
- /*
- Sf.DrawLine();
+ Sf.DrawPoligonR1();
+ 
+ //Sf.DrawLine();
  Sf.pgn[0].DrawMrk(6,clmRed);
- Sf.pgn[6].DrawLineP();
- */
+ //Sf.pgn[6].DrawLineP();
+ 
 
  mSwapBuffers();
 

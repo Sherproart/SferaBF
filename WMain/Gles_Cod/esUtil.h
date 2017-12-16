@@ -281,7 +281,7 @@ void ESUTIL_API esMatrixLoadIdentity(ESMatrix *result);
 #endif
 
 //=============my add===================
-enum aind {POS_INDEX, TXCOORD_INDEX,COL_INDEX};
+enum aind { POS_INDEX, TXCOORD_INDEX, COL_INDEX, NORMAL_INX };
 
 // режими вывода шейдером
 enum gm {GMODE_PAINT,        // рисование примитивов

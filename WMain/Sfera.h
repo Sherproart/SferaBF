@@ -3,7 +3,7 @@ struct SPoint {
     float n[3];
     void Set(float px, float py, float pz) { x = px; y = py; z = pz; };
     void SetN(float px, float py, float pz) { n[0] = px; n[1] = py; n[2] = pz; };
-    void PosToN() { SetN(1,0,0); };
+    void PosToN() { SetN(x,y,z); };
     //void PosToN() { SetN(-x, -y, -z ); };
     void Copy(SPoint* pp) { x = pp->x; y = pp->y; };
     SPoint(){};
@@ -34,6 +34,7 @@ struct TSfera {
     void Create();
     void CreateFull();
     void DrawPoligonR();
+    void DrawPoligonR1();
     void DrawLine();
 
 };

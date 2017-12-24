@@ -60,4 +60,23 @@ glLightf(GL_LIGHT0, GL_CONSTANT_ATTENATION, a);
 
 шейдерное освещение по Фонгу
 http://eax.me/opengl-lighting/
+
+освещение по Фонгу и Блинну-Фонгу !
+http://compgraphics.info/3D/lighting/phong_reflection_model.php
+
+// карта (текстура) затенения
+http://tiarum.com/wiki/Modding:Особенности_моделирования_света:_Аппроксимации_Фонга_(Phong_Shading)
+
+Отраженное (бликовое, specular) освещение:
+ Ispec = Ks*dot(H,N)^a*Is;
+ H = (L + V)нормализованное   (как вектора)
+
+ Ispec - Бликовая интенсивность
+ Ks - коэффициент зеркального отражения
+ Is - мощность бликового освещения
+ Н - вектор полупути  (halfway vector)
+ N - нормаль
+ L - направление из точки на источник
+ V - направление на наблюдателя
+
 */

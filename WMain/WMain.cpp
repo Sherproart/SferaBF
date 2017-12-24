@@ -158,7 +158,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 
-
+void SetSpecular(float a);
 //
 //  ‘”Õ ÷»ﬂ: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -177,6 +177,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 int i;
 	switch (message)
 	{
+	case WM_KEYDOWN: //printf("Dn=%X\n",wParam);
+		switch(wParam) {
+			case 0x31: SetSpecular(-1); break;
+			case 0x32: SetSpecular(1); break;
+			case VK_F1: SetSpecular(-10); break;
+			case VK_F2: SetSpecular(10); break;
+			case 0x53: SpecularEnDis(); break; // s
+			case 0x44: DiffuseEnDis(); break; // d
+		}
+		break;
 
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
@@ -193,11 +203,10 @@ int i;
             break;
 
 		case ID_32832:
-			//TestS();
+			TestS();
             //TestMatrVect();
-            TestABBA();
+            //TestABBA();
             //TestMatr1();
-			printf("Ok");
 			Sleep(300);
 			break;
 

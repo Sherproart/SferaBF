@@ -150,8 +150,8 @@ void TestS()
 	//V_rotate(-20,0,1,0);
 	//glmRotate_Z(90);
 
-	//V_rotate(45,0,0,1);
-	//V_rotate(20,1,0,0);
+	V_rotate(45,0,0,1);
+	V_rotate(85,1,0,0);
 
 	raz=0;
  }

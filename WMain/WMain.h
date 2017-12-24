@@ -19,3 +19,5 @@ void Test1();
 void Test2();
 extern HWND MainHwnd;
 void GetWindowSise(HWND hWnd);
+void SpecularEnDis();
+void DiffuseEnDis();

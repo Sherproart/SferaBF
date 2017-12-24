@@ -12,7 +12,7 @@ const double pi = 4 * atan(1.);
 const double RadGr = 180 / pi;
 const double GrRad = pi / 180;
 
-float ClipPlane[] = {0,0,1,0.3};//-5
+float ClipPlane[] = {0,0,1,0};//-5
 
 GLuint m_vertShaderHandle;   // The OpenGL vertex shader id
 GLuint m_fragShaderHandle;   // The OpenGL fragment shader id
@@ -49,13 +49,37 @@ void GetAtribAndUniformLocation()
    I_ambient = glGetUniformLocation(m_progHandle, "L_ambient");
 }
 
+
+//float Kspec=2842;//4492;
+float Kspec = 2842;
+//float Kspec=372;
+void SetSpecular(float a){
+	Kspec+=a;
+	glUniform1f(K_specular, Kspec);
+}
+
+void SpecularEnDis(){
+	float Ks=0;
+	static int x=0; x^=1;
+	if(x)Ks=Kspec; else Ks=0;  printf("Specular=%.0f\n",Ks);
+	glUniform1f(K_specular, Ks);
+}
+
+void DiffuseEnDis(){
+	float Kd=0;
+	static int x=0; x^=1;
+	if(x)Kd=1; else Kd=0;  printf("Diffuse=%.0f\n",Kd);
+	glUniform1f(K_diffuse, Kd);
+}
+
 void SetLight1() {
-    glUniform4f(uDLight1.dir, -1, -1, -1, 0);
+    //glUniform4f(uDLight1.dir, -1, -1, -1, 0);
+	glUniform4f(uDLight1.dir, -1, 0, -1, 0);
     glUniform1f(uDLight1.I, 1);
     glUniform1f(I_ambient, 1);
     glUniform1f(K_ambient, 0.1);
-    glUniform1f(K_diffuse, 1);
-    glUniform1f(K_specular, 5000);
+    glUniform1f(K_diffuse, 1);//0.5
+    glUniform1f(K_specular, Kspec);
 }
 
 
@@ -109,16 +133,18 @@ GLbyte FragShader[] =
   "void main()"
   "{"
     "if (GMode == GMODE_PAINT){"
-        //"if (v_clipDist < 0.0) gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);"
-        //"else gl_FragColor = v_Color;" /* отображение геометрической фигуры */
-        //"gl_FragColor = (v_Normal.x/200.0)*v_Color;"
-        //"gl_FragColor = v_Color;" /* отображение геометрической фигуры */
+    //"if (v_clipDist < 0.0) gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);"
+       "if (v_clipDist < 0.0)discard; "
+       "else {"
         "vec4 V=vec4(0.0, 0.0, 1.0, 0);" // направление на наблюдателя
         "float I = dot(normalize(v_Normal),-DLight1.dir)*G_diffuse*DLight1.I;"
-        "I = max(0.0, I) + G_ambient*L_ambient;"
+        "I = max(0.0, I) + G_ambient*L_ambient;" // дифузное и рассеянное
         "float H_dot_N=dot(normalize(-DLight1.dir+V),normalize(v_Normal));"
+		"H_dot_N = max(0.0, H_dot_N);"
         "I= I+ pow(H_dot_N,10.0)*G_specular*DLight1.I;"
         "gl_FragColor = v_Color*I;"
+      "}"
+		//"if(gl_FragColor.x>=1.0) gl_FragColor=vec4(0.0, 1.0, 0.0, 1.0);"
     "}"
      "else {"
         "gl_FragColor = texture2D(Texture, v_texCoord);" /* отображение шрифта или картинки */
@@ -272,7 +298,7 @@ int Init(ESContext *esContext)
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);
 
    //SetViewport(0, 0, esContext->width, esContext->height,2000);
-   glViewport(0, 0, esContext->width, esContext->height);
+   //glViewport(0, 0, esContext->width, esContext->height);
 
    PVRTMatrixIdentityF(mvpMatrix);
    glUniformMatrix4fv( UnifMvpMatrixLoc, 1, GL_FALSE, mvpMatrix.f);

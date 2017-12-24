@@ -12,8 +12,8 @@ float Black[]= { 0,0,0,1 };
 
 float Pi = atan((float)1) * 4;
 
-TSfera Sf(200,12,24);
-//TSfera Sf(200, 40, 80);
+//TSfera Sf(200,12,24);
+TSfera Sf(200, 40, 80);
 
 /**
  создает пустой массив точек длиной cnt
@@ -49,7 +49,12 @@ void TPoligon::Draw()
     glEnableVertexAttribArray(NORMAL_INX);
 
     glVertexAttrib3fv(COL_INDEX, Color);
+    //glVertexAttrib3fv(COL_INDEX, Green);
     glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
+
+    //mSwapBuffers();
+    //Sleep(400);
+    //mSwapBuffers();
 
 }
 
@@ -228,6 +233,7 @@ void TSfera::DrawPoligonR1()
     for (int i = 0; i < cnt; i++)
     {
         pgn[cnt - 1 - i].Draw();
+        //pgn[i].Draw();
     }
 
 }//TSfera::DrawPoligonR----------

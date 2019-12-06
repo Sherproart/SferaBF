@@ -7,13 +7,14 @@
 float Blue[]={0,0,1,1};
 float White[] = { 1,1,1,1 };
 float Green[] = { 0,1,0,1 };
+float BGreen[] = { 0,0.5,0,1 };
 float Red[] = { 1,0,0,1 };
 float Black[]= { 0,0,0,1 };
 
 float Pi = atan((float)1) * 4;
 
-//TSfera Sf(200,12,24);
-TSfera Sf(200, 40, 80);
+TSfera Sf(200,12,24);
+//TSfera Sf(200, 40, 80);
 
 /**
  создает пустой массив точек длиной cnt
@@ -49,7 +50,7 @@ void TPoligon::Draw()
     glEnableVertexAttribArray(NORMAL_INX);
 
     glVertexAttrib3fv(COL_INDEX, Color);
-    //glVertexAttrib3fv(COL_INDEX, Green);
+    //glVertexAttrib3fv(COL_INDEX, BGreen);
     glDrawArrays(GL_TRIANGLE_FAN, 0, cnt);
 
     //mSwapBuffers();
